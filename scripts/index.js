@@ -1,17 +1,34 @@
 async function initExtension() {
+    /**
+     * @type {HTMLElement}
+     */
     const el = await waitForElement('div.UI');
     const observer = new MutationObserver(mutations => {
-        document.querySelectorAll('div.UI table tbody tr td span span span span').forEach((i) => {
-            if (i.textContent === "Sponsored·")
-                i.closest('tr').style.display = "none";
+        mutations.forEach(m => {
+            if (!(m.target.style.display == 'none')) {
+                hideSponsored(m.target)
+            }
         })
     });
 
-    observer.observe(el.firstChild, {
-        childList: true,
-        subtree: true,
-        attributeFilter: ['style'],
-        attributes: true
+    el.firstChild.childNodes.forEach(child => {
+        observer.observe(child, {
+            childList: false,
+            subtree: false,
+            attributeFilter: ['style'],
+            attributes: true
+        });
+    })
+}
+
+/**
+ * 
+ * @param {HTMLElement} target 
+ */
+function hideSponsored(target) {
+    target.querySelectorAll('table tbody tr td span span span span').forEach((i) => {
+        if (i.textContent === "Sponsored·")
+            i.closest('tr').style.display = "none";
     });
 }
 
