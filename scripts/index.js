@@ -2,21 +2,15 @@ async function initExtension() {
     /**
      * @type {HTMLElement}
      */
-    const el = await waitForElement('div.UI');
+    const tabElement = await waitForElement('div.UI div');
     const observer = new MutationObserver(mutations => {
-        mutations.forEach(m => {
-            if (!(m.target.style.display == 'none')) {
-                hideSponsored(m.target)
-            }
-        })
+        hideSponsored(tabElement);
     });
 
-    el.firstChild.childNodes.forEach(child => {
-        observer.observe(child, {
-            childList: false,
-            subtree: false,
-            attributeFilter: ['style'],
-            attributes: true
+    tabElement.childNodes.forEach(panel => {
+        observer.observe(panel, {
+            childList: true,
+            subtree: true
         });
     })
 }
